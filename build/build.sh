@@ -40,7 +40,9 @@ make install
 popd
 
 # patchelf claims to run on multiple files *but* if it fails on any one it silently stops and doesn't process anything else...
-find "${PREFIX_DIR}" -type f -perm /u+x -exec patchelf --set-rpath '$ORIGIN/../lib:$ORIGIN/../lib/x86_64-linux-gnu/:$ORIGIN/../lib/vala-'"${SHORT_VERSION}" {} \;
+find "${PREFIX_DIR}" -maxdepth 1 -type f -perm /u+x -exec patchelf --set-rpath '$ORIGIN/../lib:$ORIGIN/../lib/x86_64-linux-gnu/:$ORIGIN/../lib/vala-'"${SHORT_VERSION}" {} \;
+find "${PREFIX_DIR}/lib" -maxdepth 1 -type f -name \*.so\* -exec patchelf --set-rpath '$ORIGIN:$ORIGIN/../x86_64-linux-gnu/:$ORIGIN/../vala-'"${SHORT_VERSION}" {} \;
+find "${PREFIX_DIR}/lib/x86_64-linux-gnu" -maxdepth 1 -type f -name \*.so\* -exec patchelf --set-rpath '$ORIGIN:$ORIGIN/..' {} \;
 
 # strip executables
 find "${PREFIX_DIR}" -type f -perm /u+x -exec strip -d {} \;
